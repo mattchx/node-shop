@@ -6,17 +6,17 @@ function App() {
   const [cart, setCart] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // [] fetch get product list
-  // [] store product list in state
-  // [] create state for cart
-  // [] fetch post the selected item to cart
+  // [x] fetch get product list
+  // [x] store product list in state
+  // [x] create state for cart
+  // [x] fetch post the selected item to cart
 
   const url = 'http://localhost:3001/'
 
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const response = await fetch(url + 'products', { method: "GET" });
+      const response = await fetch(url + 'products', { method: "GET", headers: { 'Content-Type': 'application/json' } });
       const data = await response.json()
       setProducts(data)
       console.log(data)
@@ -32,26 +32,52 @@ function App() {
     fetchProducts()
   }, [])
 
-  const addToCart = (id) => {
+  const addToCart = async (id) => {
     // fetch post id to add item to cart in backend
     console.log(`Product ID:${id} was added to your cart`)
+  
+    try {
+      const response = await fetch(url + 'cart', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id })
+      })
+      const data = await response.json()
+      setCart(data)
+    } catch (err) {
+      console.log(err)
+
+    } finally {
+      console.log('cart data fetched')
+
+    }
   }
 
   return (
     <>
-      <h3>Welcome to your store</h3>
+      <h3>Welcome to our store!</h3>
       {loading ? "Loading..." :
         <div className='product-list'>
-          {Array.isArray(products) && products.map(p => (
-            <div className="product" key={p.id}>
-              <strong>{p.name}</strong>
-              <p>{p.price}</p>
-              <button onClick={() => addToCart(p.id)}>Add To Cart</button>
+          {Array.isArray(products) && products.map(x => (
+            <div className="product" key={x.id}>
+              <strong>{x.name}</strong>
+              <p>{x.price}</p>
+              <button onClick={() => addToCart(x.id)}>Add To Cart</button>
             </div>
           ))
           }
         </div>
       }
+      <ul className='cart'>
+        {Array.isArray(cart) && cart.map(x => (
+          <li className="cart" key={x.id}>
+            <strong>{x.name}</strong>
+            <p>{x.price}</p>
+            <button onClick={() => addToCart(x.id)}>Remove To Cart</button>
+          </li>
+        ))
+        }
+      </ul>
 
     </>
   )

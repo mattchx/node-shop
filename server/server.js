@@ -19,11 +19,11 @@ app.get('/products', (req, res) => {
   res.json(products);
 })
 
-app.post('/cart', (req, res) => {
-  const productId = req.body.id
-  cart.push(productId)
-  console.log("Cart:", cart)
-  req.json(cart)
+app.post('/cart', (req, res) => {  
+    const productId = req.body.id
+    const product = products.find(p => p.id === productId)
+    cart.push(product)
+    res.json(cart)
 })
 
 
