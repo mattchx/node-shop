@@ -9,12 +9,21 @@ const products = [
   { id: 3, name: 'Product 3', price: 300 },
 ];
 
+const cart = []
+
 app.use(express.json())
 app.use(cors())
 
 
 app.get('/products', (req, res) => {
-  res.json(products)
+  res.json(products);
+})
+
+app.post('/cart', (req, res) => {
+  const productId = req.body.id
+  cart.push(productId)
+  console.log("Cart:", cart)
+  req.json(cart)
 })
 
 
