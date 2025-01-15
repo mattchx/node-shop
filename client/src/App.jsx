@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { apiRequest } from './util/api'
 import './App.css'
 
 function App() {
@@ -6,18 +7,10 @@ function App() {
   const [cart, setCart] = useState([])
   const [loading, setLoading] = useState(false)
 
-  // [x] fetch get product list
-  // [x] store product list in state
-  // [x] create state for cart
-  // [x] fetch post the selected item to cart
-
-  const url = 'http://localhost:3001/'
-
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const response = await fetch(url + 'products', { method: "GET", headers: { 'Content-Type': 'application/json' } });
-      const data = await response.json()
+      const data = await apiRequest("products", "GET")
       setProducts(data)
       console.log(data)
     } catch (err) {
@@ -32,14 +25,9 @@ function App() {
     fetchProducts()
   }, [])
 
-  const addToCart = async (id, quantity = 1) => {
+  const addToCart = async (id) => {
     try {
-      const response = await fetch(url + 'cart', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, quantity })
-      })
-      const data = await response.json()
+      const data = await apiRequest("cart", "POST", { id, quantity: 1 })
       setCart(data)
     } catch (err) {
       console.log(err)
@@ -48,25 +36,16 @@ function App() {
 
   const removeFromCart = async (id) => {
     try {
-      const response = await fetch(url + 'cart', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, quantity: -1 })
-      })
-      const data = await response.json()
+      const data = await apiRequest("cart", "POST", { id, quantity: -1 })
       setCart(data)
     } catch (err) {
       console.log(err)
     }
   }
-  const removeAll = async (id) => {
+
+  const clearFromCart = async (id) => {
     try {
-      const response = await fetch(url + 'cart', {
-        method: "DELETE",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      })
-      const data = await response.json()
+      const data = await apiRequest("cart", "DELETE", { id })
       setCart(data)
     } catch (err) {
       console.log(err)
@@ -97,9 +76,9 @@ function App() {
             <div className="quantity-controls">
               <button onClick={() => removeFromCart(x.id)}>-</button>
               <span className='quantity'>x {x.quantity}</span>
-              <button onClick={() => addToCart(x.id, 1)}>+</button>
+              <button onClick={() => addToCart(x.id)}>+</button>
             </div>
-            <button onClick={() => removeAll(x.id)}>Remove All</button>
+            <button onClick={() => clearFromCart(x.id)}>Remove All</button>
           </li>
         ))
         }
