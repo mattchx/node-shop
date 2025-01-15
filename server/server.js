@@ -44,6 +44,14 @@ app.post('/cart', (req, res) => {
   res.json(cart)
 })
 
+app.delete('/cart', (req, res) => {
+  const productId = req.body.id;
+
+  cart = cart.filter(x => x.id !== productId);
+
+  res.json(cart)
+})
+
 
 
 

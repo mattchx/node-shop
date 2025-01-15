@@ -59,6 +59,19 @@ function App() {
       console.log(err)
     }
   }
+  const removeAll = async (id) => {
+    try {
+      const response = await fetch(url + 'cart', {
+        method: "DELETE",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+      const data = await response.json()
+      setCart(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <>
@@ -86,7 +99,7 @@ function App() {
               <span className='quantity'>x {x.quantity}</span>
               <button onClick={() => addToCart(x.id, 1)}>+</button>
             </div>
-            <button onClick={() => removeFromCart(x.id)}>Remove All</button>
+            <button onClick={() => removeAll(x.id)}>Remove All</button>
           </li>
         ))
         }
