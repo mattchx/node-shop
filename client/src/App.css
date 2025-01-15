@@ -40,3 +40,15 @@
 .read-the-docs {
   color: #888;
 }
+
+.product-list {
+  display: flex;
+  gap: 2rem;
+}
+
+.product {
+  border: 1px solid white;
+  padding: 1rem;
+  border-radius: 5px;
+  background: darkslategrey;
+}
