@@ -32,24 +32,31 @@ function App() {
     fetchProducts()
   }, [])
 
-  const addToCart = async (id) => {
-    // fetch post id to add item to cart in backend
-    console.log(`Product ID:${id} was added to your cart`)
-  
+  const addToCart = async (id, quantity = 1) => {
     try {
       const response = await fetch(url + 'cart', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id })
+        body: JSON.stringify({ id, quantity })
       })
       const data = await response.json()
       setCart(data)
     } catch (err) {
       console.log(err)
+    }
+  }
 
-    } finally {
-      console.log('cart data fetched')
-
+  const removeFromCart = async (id) => {
+    try {
+      const response = await fetch(url + 'cart', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, quantity: -1 })
+      })
+      const data = await response.json()
+      setCart(data)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -61,7 +68,7 @@ function App() {
           {Array.isArray(products) && products.map(x => (
             <div className="product" key={x.id}>
               <strong>{x.name}</strong>
-              <p>{x.price}</p>
+              <p>${x.price}</p>
               <button onClick={() => addToCart(x.id)}>Add To Cart</button>
             </div>
           ))
@@ -69,11 +76,17 @@ function App() {
         </div>
       }
       <ul className='cart'>
+        {cart.length === 0 && <p>Your cart is currently empty.</p>}
         {Array.isArray(cart) && cart.map(x => (
           <li className="cart-item" key={x.id}>
             <strong>{x.name}</strong>
-            <p>{x.price}</p>
-            <button onClick={() => addToCart(x.id)}>Remove From Cart</button>
+            <p>${x.price}</p>
+            <div className="quantity-controls">
+              <button onClick={() => removeFromCart(x.id)}>-</button>
+              <span className='quantity'>x {x.quantity}</span>
+              <button onClick={() => addToCart(x.id, 1)}>+</button>
+            </div>
+            <button onClick={() => removeFromCart(x.id)}>Remove All</button>
           </li>
         ))
         }

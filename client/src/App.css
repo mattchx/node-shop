@@ -74,6 +74,10 @@
     padding: 0.5rem 1rem;
     align-self: center;
   }
+
+  .quantity {
+    margin: 0 0.5rem;
+  }
   
 }
 

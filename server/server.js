@@ -9,7 +9,7 @@ const products = [
   { id: 3, name: 'Product 3', price: 300 },
 ];
 
-const cart = []
+var cart = []
 
 app.use(express.json())
 app.use(cors())
@@ -19,12 +19,34 @@ app.get('/products', (req, res) => {
   res.json(products);
 })
 
-app.post('/cart', (req, res) => {  
-    const productId = req.body.id
-    const product = products.find(p => p.id === productId)
-    cart.push(product)
-    res.json(cart)
+app.post('/cart', (req, res) => {
+  const productId = req.body.id;
+  const productQuantity = req.body.quantity;
+
+  const product = products.find(p => p.id === productId);
+
+  // Check if product already exists in cart
+  const cartItem = cart.find(x => x.id === productId);
+  console.log(cartItem)
+  // Update quantity if item exists in cart
+  if (cartItem) {
+    if (cartItem.quantity + productQuantity === 0) {
+      // Remove item from cart when quantity reaches 0
+      cart = cart.filter(x => x.id !== productId);
+    } else {
+      cartItem.quantity += productQuantity;
+    }
+  } else {
+    // Add new item to cart with initial quantity
+    cart.push({ ...product, quantity: productQuantity })
+  }
+
+  res.json(cart)
 })
+
+
+
+
 
 
 const port = 3001;
