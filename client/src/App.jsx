@@ -70,10 +70,10 @@ function App() {
       }
       <ul className='cart'>
         {Array.isArray(cart) && cart.map(x => (
-          <li className="cart" key={x.id}>
+          <li className="cart-item" key={x.id}>
             <strong>{x.name}</strong>
             <p>{x.price}</p>
-            <button onClick={() => addToCart(x.id)}>Remove To Cart</button>
+            <button onClick={() => addToCart(x.id)}>Remove From Cart</button>
           </li>
         ))
         }

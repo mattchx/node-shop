@@ -52,3 +52,31 @@
   border-radius: 5px;
   background: darkslategrey;
 }
+
+.cart {
+  background: darkseagreen;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.cart-item {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid black;
+  border-radius: 5px;
+  
+  button {
+    padding: 0.5rem 1rem;
+    align-self: center;
+  }
+  
+}
+
+.cart-item:hover {
+  background: seagreen;
+}
