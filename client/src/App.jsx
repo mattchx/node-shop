@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import ProductForm from './components/ProductForm'
 import { apiRequest } from './util/api'
 import './App.css'
@@ -31,7 +31,7 @@ function App() {
     initalFetch()
   }, [])
 
-  const addToCart = async (id) => {
+  const addToCart = useCallback(async (id) => {
     try {
       const data = await apiRequest("cart", "POST", { id, quantity: 1 })
       setCart(data)
@@ -42,9 +42,9 @@ function App() {
         details: err.details
       })
     }
-  }
+  }, [])
 
-  const removeFromCart = async (id) => {
+  const removeFromCart = useCallback(async (id) => {
     try {
       const data = await apiRequest("cart", "POST", { id, quantity: -1 })
       setCart(data)
@@ -55,9 +55,9 @@ function App() {
         details: err.details
       })
     }
-  }
+  }, [])
 
-  const clearFromCart = async (id) => {
+  const clearFromCart = useCallback(async (id) => {
     try {
       const data = await apiRequest("cart", "DELETE", { id })
       setCart(data)
@@ -68,7 +68,7 @@ function App() {
         details: err.details
       })
     }
-  }
+  }, [])
 
   const addToProductList = (product) => {
     setProducts(prev => [...prev, product])
@@ -76,17 +76,20 @@ function App() {
 
   return (
     <>
-      <ProductForm addToProductList={addToProductList}/>
+      <ProductForm addToProductList={addToProductList} />
       <h2>Welcome to our store!</h2>
-      {error && (
-        <div className="error-message">
-          <h3>Error: {error.message}</h3>
-          {error.status === 400 && <p>Please check your input and try again</p>}
-          {error.status === 404 && <p>The requested resource was not found</p>}
-          {error.status === 422 && <p>Invalid data: {error.details?.errors?.join(', ') || ''}</p>}
-          {error.status >= 500 && <p>Server error - please try again later</p>}
-        </div>
-      )}
+      {useMemo(() => {
+        if (!error) return null
+        return (
+          <div className="error-message">
+            <h3>Error: {error.message}</h3>
+            {error.status === 400 && <p>Please check your input and try again</p>}
+            {error.status === 404 && <p>The requested resource was not found</p>}
+            {error.status === 422 && <p>Invalid data: {error.details?.errors?.join(', ') || ''}</p>}
+            {error.status >= 500 && <p>Server error - please try again later</p>}
+          </div>
+        )
+      }, [error])}
       {loading ? "Loading..." :
         <div className='product-list'>
           {Array.isArray(products) && products.map(x => (
