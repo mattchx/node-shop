@@ -15,13 +15,16 @@ function ProductForm({ addToProductList }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true)
-    console.log('name', name)
+    if (name === "") {
+      setError("A name is required.")
+      return
+    }
     const priceRegex = new RegExp(/^[0-9]+(\.[0-9]+)?$/)
     if (!priceRegex.test(price)) {
       setError('Price format is incorrect.')
       return
     }
+    setIsSubmitting(true)
     try {
       const response = await apiRequest('products', "POST", { name, price })
       console.log('res', response)
@@ -44,6 +47,7 @@ function ProductForm({ addToProductList }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          noValidate
         />
       </div>
 
@@ -57,10 +61,11 @@ function ProductForm({ addToProductList }) {
           step="0.01"
           min="0"
           required
+          noValidate
         />
       </div>
 
-      {error && <p>{error.message}</p>}
+      {error && <p>{error}</p>}
       <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Adding...' : 'Add Product'}
       </button>
