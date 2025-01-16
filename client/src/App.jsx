@@ -6,7 +6,7 @@ function App() {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(null)
 
   const initalFetch = async () => {
     setLoading(true)
@@ -16,7 +16,11 @@ function App() {
       setCart(data.cart)
       console.log(data)
     } catch (err) {
-      setError(err)
+      setError({
+        message: err.message,
+        status: err.status,
+        details: err.details
+      })
     } finally {
       setLoading(false)
     }
@@ -32,7 +36,11 @@ function App() {
       const data = await apiRequest("cart", "POST", { id, quantity: 1 })
       setCart(data)
     } catch (err) {
-      console.log(err)
+      setError({
+        message: err.message,
+        status: err.status,
+        details: err.details
+      })
     }
   }
 
@@ -41,7 +49,11 @@ function App() {
       const data = await apiRequest("cart", "POST", { id, quantity: -1 })
       setCart(data)
     } catch (err) {
-      console.log(err)
+      setError({
+        message: err.message,
+        status: err.status,
+        details: err.details
+      })
     }
   }
 
@@ -50,14 +62,26 @@ function App() {
       const data = await apiRequest("cart", "DELETE", { id })
       setCart(data)
     } catch (err) {
-      console.log(err)
+      setError({
+        message: err.message,
+        status: err.status,
+        details: err.details
+      })
     }
   }
 
   return (
     <>
       <h2>Welcome to our store!</h2>
-      {error && <p>Error: {error}</p>}
+      {error && (
+        <div className="error-message">
+          <h3>Error: {error.message}</h3>
+          {error.status === 400 && <p>Please check your input and try again</p>}
+          {error.status === 404 && <p>The requested resource was not found</p>}
+          {error.status === 422 && <p>Invalid data: {error.details?.errors?.join(', ') || ''}</p>}
+          {error.status >= 500 && <p>Server error - please try again later</p>}
+        </div>
+      )}
       {loading ? "Loading..." :
         <div className='product-list'>
           {Array.isArray(products) && products.map(x => (

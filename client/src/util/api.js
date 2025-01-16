@@ -7,13 +7,26 @@ export async function apiRequest(endpoint, method, body) {
       body: body ? JSON.stringify(body) : undefined
     });
 
+    const data = await response.json();
+    
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      // Parse backend error response
+      const error = new Error(data.message || 'Request failed');
+      error.status = response.status;
+      error.details = data;
+      throw error;
     }
 
-    return await response.json()
+    return data;
   } catch (error) {
-    console.error('Fetch error:', error);
+    console.error('API Error:', error);
+    
+    // Enhance error with more context
+    if (!error.status) {
+      error.status = 500;
+      error.message = 'Network error - please check your connection';
+    }
+    
     throw error;
   }
 }
