@@ -1,14 +1,30 @@
 import { useState } from 'react';
 import './ProductForm.css'
-// import { createProduct } from '../util/api';
+import { apiRequest } from '../util/api';
+import PropTypes from 'prop-types';
 
-function ProductForm() {
+ProductForm.propTypes = {
+  addToProductList: PropTypes.func.isRequired,
+};
+
+function ProductForm({ addToProductList }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  // const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true)
+    try {
+      const response = await apiRequest('/products', "POST", { name, price })
+      console.log('res', response)
+      addToProductList(response)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setIsSubmitting(false)
+    }
   };
 
   return (
@@ -38,10 +54,10 @@ function ProductForm() {
         />
       </div>
 
-      {/* <button type="submit" disabled={isSubmitting}>
+      {error && <p>{error.message}</p>}
+      <button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Adding...' : 'Add Product'}
-      </button> */}
-      <button type='submit'>Add Product</button>
+      </button>
     </form>
   );
 }

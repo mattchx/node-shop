@@ -70,9 +70,13 @@ function App() {
     }
   }
 
+  const addToProductList = (product) => {
+    setProducts(prev => [...prev, product])
+  }
+
   return (
     <>
-      <ProductForm />
+      <ProductForm addToProductList={addToProductList}/>
       <h2>Welcome to our store!</h2>
       {error && (
         <div className="error-message">
