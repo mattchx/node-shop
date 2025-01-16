@@ -29,6 +29,8 @@ function ProductForm({ addToProductList }) {
       const response = await apiRequest('products', "POST", { name, price })
       console.log('res', response)
       addToProductList(response)
+      setName("")
+      setPrice("")
     } catch (err) {
       setError(err)
     } finally {
