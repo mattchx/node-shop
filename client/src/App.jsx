@@ -6,15 +6,17 @@ function App() {
   const [products, setProducts] = useState([])
   const [cart, setCart] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
-  const fetchProducts = async () => {
+  const initalFetch = async () => {
     setLoading(true)
     try {
-      const data = await apiRequest("products", "GET")
-      setProducts(data)
+      const data = await apiRequest("", "GET")
+      setProducts(data.products)
+      setCart(data.cart)
       console.log(data)
     } catch (err) {
-      console.log(err)
+      setError(err)
     } finally {
       setLoading(false)
     }
@@ -22,7 +24,7 @@ function App() {
 
   useEffect(() => {
     // fetch get products
-    fetchProducts()
+    initalFetch()
   }, [])
 
   const addToCart = async (id) => {
@@ -55,6 +57,7 @@ function App() {
   return (
     <>
       <h3>Welcome to our store!</h3>
+      {error && <p>Error: {error}</p>}
       {loading ? "Loading..." :
         <div className='product-list'>
           {Array.isArray(products) && products.map(x => (

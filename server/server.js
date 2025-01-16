@@ -15,8 +15,8 @@ app.use(express.json())
 app.use(cors())
 
 
-app.get('/products', (req, res) => {
-  res.json(products);
+app.get('/', (req, res) => {
+  res.json({ products, cart });
 })
 
 app.post('/cart', (req, res) => {
@@ -51,11 +51,6 @@ app.delete('/cart', (req, res) => {
 
   res.json(cart)
 })
-
-
-
-
-
 
 const port = 3001;
 app.listen(port, () => {
