@@ -56,7 +56,7 @@ function App() {
 
   return (
     <>
-      <h3>Welcome to our store!</h3>
+      <h2>Welcome to our store!</h2>
       {error && <p>Error: {error}</p>}
       {loading ? "Loading..." :
         <div className='product-list'>
