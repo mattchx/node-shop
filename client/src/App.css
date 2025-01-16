@@ -45,6 +45,7 @@
 .product-list {
   display: flex;
   gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .product {
@@ -61,6 +62,8 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
+  max-width: 800px;
+  margin: 1rem auto;
 }
 
 .cart-item {

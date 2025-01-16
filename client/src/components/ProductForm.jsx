@@ -16,8 +16,14 @@ function ProductForm({ addToProductList }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true)
+    console.log('name', name)
+    const priceRegex = new RegExp(/^[0-9]+(\.[0-9]+)?$/)
+    if (!priceRegex.test(price)) {
+      setError('Price format is incorrect.')
+      return
+    }
     try {
-      const response = await apiRequest('/products', "POST", { name, price })
+      const response = await apiRequest('products', "POST", { name, price })
       console.log('res', response)
       addToProductList(response)
     } catch (err) {

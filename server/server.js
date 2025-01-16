@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const { v4: uuid } = require('uuid')
 const { HttpError, BadRequestError, NotFoundError, ValidationError } = require('./errors')
 
 const app = express()
@@ -7,7 +8,7 @@ const app = express()
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack)
-  
+
   if (err instanceof HttpError) {
     return res.status(err.statusCode).json({
       status: 'error',
@@ -22,7 +23,7 @@ app.use((err, req, res, next) => {
   })
 })
 
-const products = [
+var products = [
   { id: 1, name: 'Product 1', price: 100 },
   { id: 2, name: 'Product 2', price: 200 },
   { id: 3, name: 'Product 3', price: 300 },
@@ -38,6 +39,18 @@ app.get('/', (req, res) => {
   res.json({ products, cart });
 })
 
+app.post('/products', (req, res) => {
+  const name = req.body.name;
+  const price = req.body.price;
+
+  // generate id and add to create new product
+  const product = { id: uuid(), name, price }
+  // update product list
+  products.push(product)
+  // return product with id
+  res.json(product)
+})
+
 app.post('/cart', (req, res, next) => {
   const productId = req.body.id;
   const productQuantity = req.body.quantity;
@@ -51,8 +64,8 @@ app.post('/cart', (req, res, next) => {
     throw new NotFoundError('Product not found')
   }
 
-  if (typeof productQuantity !== 'number' || productQuantity < 1) {
-    throw new ValidationError('Quantity must be a positive number')
+  if (typeof productQuantity !== 'number') {
+    throw new ValidationError('Quantity must be a number')
   }
 
   // Check if product already exists in cart
