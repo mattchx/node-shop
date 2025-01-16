@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ProductForm from './components/ProductForm'
 import { apiRequest } from './util/api'
 import './App.css'
 
@@ -27,7 +28,6 @@ function App() {
   }
 
   useEffect(() => {
-    // fetch get products
     initalFetch()
   }, [])
 
@@ -72,6 +72,7 @@ function App() {
 
   return (
     <>
+      <ProductForm />
       <h2>Welcome to our store!</h2>
       {error && (
         <div className="error-message">
