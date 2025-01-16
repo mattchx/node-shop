@@ -1,7 +1,26 @@
 const express = require('express')
 const cors = require('cors')
+const { HttpError, BadRequestError, NotFoundError, ValidationError } = require('./errors')
 
 const app = express()
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  
+  if (err instanceof HttpError) {
+    return res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message
+    })
+  }
+
+  // Handle unexpected errors
+  res.status(500).json({
+    status: 'error',
+    message: 'Something went wrong'
+  })
+})
 
 const products = [
   { id: 1, name: 'Product 1', price: 100 },
@@ -19,11 +38,22 @@ app.get('/', (req, res) => {
   res.json({ products, cart });
 })
 
-app.post('/cart', (req, res) => {
+app.post('/cart', (req, res, next) => {
   const productId = req.body.id;
   const productQuantity = req.body.quantity;
 
+  if (!productId || !productQuantity) {
+    throw new BadRequestError('Product ID and quantity are required')
+  }
+
   const product = products.find(p => p.id === productId);
+  if (!product) {
+    throw new NotFoundError('Product not found')
+  }
+
+  if (typeof productQuantity !== 'number' || productQuantity < 1) {
+    throw new ValidationError('Quantity must be a positive number')
+  }
 
   // Check if product already exists in cart
   const cartItem = cart.find(x => x.id === productId);
@@ -44,8 +74,17 @@ app.post('/cart', (req, res) => {
   res.json(cart)
 })
 
-app.delete('/cart', (req, res) => {
+app.delete('/cart', (req, res, next) => {
   const productId = req.body.id;
+
+  if (!productId) {
+    throw new BadRequestError('Product ID is required')
+  }
+
+  const itemExists = cart.some(x => x.id === productId);
+  if (!itemExists) {
+    throw new NotFoundError('Item not found in cart')
+  }
 
   cart = cart.filter(x => x.id !== productId);
 
