@@ -1,7 +1,8 @@
+const API_URL = import.meta.env.API_URL || 'http://localhost:3001/'
+
 export async function apiRequest(endpoint, method, body) {
-  const url = 'http://localhost:3001/';
   try {
-    const response = await fetch(url + endpoint, {
+    const response = await fetch(API_URL + endpoint, {
       method,
       headers: { "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : undefined
