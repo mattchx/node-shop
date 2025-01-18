@@ -34,8 +34,8 @@ var cart = []
 app.use(express.json())
 app.use(cors({
   origin: [
-    'http://localhost:3000', // Local development
-    'https://node-shop-production-f5d5.up.railway.app' // Production
+    'http://localhost:5173',
+    'https://newnodeshop.netlify.app',
   ],
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type'],
