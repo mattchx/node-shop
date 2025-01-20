@@ -28,6 +28,7 @@ cd ../server && npm install
 
 ## Running the Project
 
+### Option 1: Separate Terminals
 1. Start the development server:
 ```bash
 # In one terminal
@@ -40,6 +41,23 @@ cd client && npm run dev
 2. Access the application at:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3001
+
+### Option 2: Concurrent Execution (Recommended)
+1. Install concurrently:
+```bash
+# Install globally
+npm install -g concurrently
+
+# OR install locally
+npm install concurrently --save-dev
+```
+
+2. Run both client and server with one command:
+```bash
+npm run dev
+```
+
+This will start both the client and server simultaneously.
 
 ## Deployment
 
